@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Function Practice</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+    <script src="./app.js"></script>
+
+    <script>
+      $(document).ready(function() {
+
+        function wordCount(fragment) {
+          if(!fragment || (fragment.length === 0) ) return 0;
+          return fragment.trim().split(/\s+/).length;
+        }
+        createExample('Word Count', {
+          description: 'Create a function that returns the number of words in \
+            a fragment of text',
+          implementation: wordCount,
+          validation: [
+            {
+              input: 'one two three',
+              output: 3
+            },
+            {
+              input: '  ignore  spaces  ',
+              output: 2
+            },
+            {
+              input: null,
+              output: 0
+            },
+            {
+              input: '',
+              output: 0
+            }
+          ]
+        });
+
+        function reverseString(fragment) {
+          // check null string
+          if ( fragment === null) return null;
+
+          var revdFrag='';
+          for ( var i=fragment.length-1; i>=0; i--) {
+            revdFrag += fragment[i];
+          };
+          return revdFrag;
+        }
+        createExample('Reverse Text', {
+          description: 'Create a function that reverses the characters in \
+            a string',
+          implementation: reverseString,
+          validation: [
+            {
+              input: 'test value',
+              output: 'eulav tset'
+            },
+            {
+              input: null,
+              output: null
+            },
+            {
+              input: '',
+              output: ''
+            }
+          ]
+        });
+        var Denominations = {
+                          hundreds: 10000,
+                          fifties: 5000,
+                          twenties: 2000,
+                          tens: 1000,
+                          fives: 500,
+                          ones: 100,
+                          halves: 50,
+                          quarters: 25,
+                          dimes: 10,
+                          nickels: 5,
+                          pennies: 1
+          };
+        // function to translate a number as currancy quantities
+        function tenderDenominations(currency) {
+          // create empty Denominations
+          var change = {};
+          // promote currency by 100 to eliminate dealing with he decimal point
+          var remainder = currency * 100;
+          var billCount = 0;
+          var tstVar = 0;
+          // return empty Denominations if no currency
+
+          for ( var bills in Denominations ) {
+            billCount = Math.floor(remainder / Denominations[bills]);
+            if ( billCount > 0 )
+               change[bills] = billCount;  // use bills as index into new change object and store count
+            remainder = Math.floor(remainder - ( billCount * Denominations[bills]));
+            if ( remainder < 0 )
+               remainder = 0;
+          };
+
+          return change;
+          // loop through currency making change
+        }
+        createExample('Tender Denominations', {
+          description: 'Write a function that given a dollar amount returns \
+            the Denominations in bills and coins. For instance, given \
+            <code>7.23</code> it should return: \
+            <pre>{ fives: 1, ones: 2, dimes: 2, pennies: 3 }</pre>',
+          implementation: tenderDenominations,
+          validation: [
+            {
+              input: 7.23,
+              output: { fives: 1, ones: 2, dimes: 2, pennies: 3 }
+            },
+            {
+              input: 0.00,
+              output: { }
+            },
+            {
+              input: 238.48,
+              output: { hundreds: 2, twenties:1, tens:1, fives: 1, ones: 3, quarters: 1, dimes: 2, pennies: 3 }
+            }
+          ]
+        });
+
+        createExample('The Pluralizer', {
+          description: 'Write a function that takes two arguments, a noun \
+            and a number, and returns the number and the noun in pluralized \
+            form (for instance, "1 dog", "5 cats")',
+          implementation: null,
+          validation: [
+            {
+              input: ['dog', 1],
+              output: '1 dog'
+            },
+            {
+              input: ['cat', 5],
+              output: '5 cats'
+            }
+          ]
+        });
+
+        var movieList = [
+          'The Shawshank Redemption,1994,1043071',
+          'The Godfather,1972,732416',
+          'The Godfather: Part II,1974,474640',
+          'Pulp Fiction,1994,806431',
+          'The Dark Knight,2008,1017508',
+          '12 Angry Men,1957,255846',
+          'Schindler\'s List,1993,528900',
+          'The Lord of the Rings: The Return of the King,2003,738931',
+          'Fight Club,1999,791186',
+          'Star Wars: Episode V - The Empire Strikes Back,1980,503348'
+        ];
+
+        function movieParse(movies) {
+          var MovieObj = { movie: "",
+                           year: 0,
+                           votes: 0
+                         };
+          var movieData = [MovieObj,MovieObj,MovieObj,MovieObj,MovieObj,
+                           MovieObj,MovieObj,MovieObj,MovieObj,MovieObj];
+  
+          for ( var idx=0; idx < movieList.length; idx++ ) {
+            var mObj = { movie: "",
+                         year: 0,
+                         votes: 0
+                       };
+            var movie = movieList[idx].split(",");
+            mObj.movie = movie[0];
+            mObj.year = parseInt(movie[1]);
+            mObj.votes = parseInt(movie[2]);
+//            console.log(mObj.movie +"--"+mObj.year+"--"+mObj.votes);
+            movieData[idx] = mObj;
+          };
+//          console.log(JSON.stringify(movieData));
+          
+          movieData.sort(function(a,b) {return a.year-b.year;} );
+//          debugger;
+          for ( var idx=0; idx < movieData.length; idx++ ) {
+//              console.log("movieData["+idx+"] "+movieData[idx].movie +" ** "+movieData[idx].year+" ** "+movieData[idx].votes);
+          };
+          //console.log("After sort movie count: "+movieData.length);
+
+          return movieData;
+        }
+        createExample('Movie Parsing', {
+          description: "Given the following comma separated list of IMDb top \
+            rated movies: <pre>var movieList = " +
+            JSON.stringify(movieList, null, '  ') +
+            "</pre> create a function that splits the values into the title, \
+            year, and number of votes and returns a list of movie objects \
+            sorted by year.",
+          implementation: movieParse,
+          validation: [
+            {
+              input: movieList,
+              output: [ {"movie":"12 Angry Men","year":1957,"votes":255846},
+                        {"movie":"The Godfather","year":1972,"votes":732416},
+                        {"movie":"The Godfather: Part II","year":1974,"votes":474640},
+                        {"movie":"Star Wars: Episode V - The Empire Strikes Back","year":1980,"votes":503348},
+                        {"movie":"Schindler's List","year":1993,"votes":528900},
+                        {"movie":"The Shawshank Redemption","year":1994,"votes":1043071},
+                        {"movie":"Pulp Fiction","year":1994,"votes":806431},
+                        {"movie":"Fight Club","year":1999,"votes":791186},
+                        {"movie":"The Lord of the Rings: The Return of the King","year":2003,"votes":738931},
+                        {"movie":"The Dark Knight","year":2008,"votes":1017508}
+                      ]
+            }
+          ]
+        });
+      });
+    </script>
+
+  </body>
+</html>
